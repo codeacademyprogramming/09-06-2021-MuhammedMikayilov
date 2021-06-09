@@ -64,6 +64,7 @@ export const Sidebar = (props: IProps) => {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
   const routes = [
     { route: "Playlist", path: "/playlist" },
     { route: "Songs", path: "/songs" },

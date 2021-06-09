@@ -8,7 +8,8 @@ const url = require("native-url");
 import { ISongsPayload, IPlaylistPayload } from "./interfaces/index";
 import { IRegisterPayload, ILoginPayload } from "./interfaces/users";
 import { Songs, Playlist, Auth } from "./modules";
-import { comparePassword } from "./helpers/index";
+import { comparePassword, requiredAuth } from "./helpers/index";
+import jwt from "jsonwebtoken";
 import * as yup from "yup";
 const path = require("path");
 app.use(cors());
@@ -52,7 +53,7 @@ let loginSchema = yup.object().shape({
   password: yup.string().required(),
 });
 
-app.post("/register", async (req: Request, res: Response) => {
+app.post("/auth/register", async (req: Request, res: Response) => {
   const registerPayload: IRegisterPayload = {
     ...req.body,
   };
@@ -74,7 +75,7 @@ app.post("/register", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/login", async (req: Request, res: Response) => {
+app.post("/auth/login", async (req: Request, res: Response) => {
   const loginPayload: ILoginPayload = {
     ...req.body,
   };
@@ -91,7 +92,12 @@ app.post("/login", async (req: Request, res: Response) => {
       if (!comparePassword(loginPayload.password, user.password)) {
         return res.status(422).json({ message: "Emial or password is wrong" });
       } else {
-        res.status(200).json(user);
+        const token = jwt.sign(
+          { id: user._id, email: user.email },
+          "loginmymusicapp",
+          { expiresIn: "30s" }
+        );
+        res.status(200).json({ token });
       }
     }
   } catch (err) {
@@ -100,7 +106,7 @@ app.post("/login", async (req: Request, res: Response) => {
 });
 
 // Playlist routes
-app.get("/playList", async (req: Request, res: Response) => {
+app.get("/playList", requiredAuth, async (req: Request, res: Response) => {
   try {
     const playlist = await Playlist.find();
     res.status(200).json(playlist);
