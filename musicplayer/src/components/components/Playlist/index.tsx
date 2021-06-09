@@ -2,6 +2,7 @@ import { Typography } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { getPlaylist } from "../../redux/actions/playlistAction";
+import Sidebar from "../../Sidebar";
 import Playlists from "./Playlists";
 
 function Playlist() {
@@ -10,12 +11,15 @@ function Playlist() {
     getPlaylist()(dispatch);
   }, [dispatch]);
   return (
-    <div className="content">
-      <Typography variant="h3" align="center">
-        Playlist
-      </Typography>
-      <Playlists />
-    </div>
+    <>
+      <Sidebar />
+      <div className="content">
+        <Typography variant="h3" align="center">
+          Playlist
+        </Typography>
+        <Playlists />
+      </div>
+    </>
   );
 }
 

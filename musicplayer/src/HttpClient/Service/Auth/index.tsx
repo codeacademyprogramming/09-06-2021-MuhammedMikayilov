@@ -3,7 +3,7 @@ import { HttpClient } from "../../HttpClient";
 
 class AuthService extends HttpClient {
   constructor() {
-    super("http://localhost:8000");
+    super("http://localhost:8000/auth");
   }
 
   loginUser(body: ILogin) {

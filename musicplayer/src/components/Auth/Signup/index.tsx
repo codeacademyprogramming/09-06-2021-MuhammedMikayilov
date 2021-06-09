@@ -12,6 +12,8 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { useHistory } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
 
 function Copyright() {
   return (
@@ -49,6 +51,22 @@ const useStyles = makeStyles((theme) => ({
 const SignUp = () => {
   const classes = useStyles();
 
+  const { push } = useHistory();
+  const [inputVal, setInputVal] = React.useState({
+    email: "",
+    password: "",
+  });
+
+  //   const user = useSelector((state: IUser) => state.users);
+
+  const dispatch = useDispatch();
+  const handleChange = React.useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setInputVal({ ...inputVal, [name]: value });
+    },
+    [inputVal]
+  );
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -64,7 +82,7 @@ const SignUp = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="fname"
-                name="firstName"
+                name="name"
                 variant="outlined"
                 required
                 fullWidth
@@ -78,7 +96,7 @@ const SignUp = () => {
                 variant="outlined"
                 required
                 fullWidth
-                id="lastName"
+                id="surname"
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
@@ -107,12 +125,6 @@ const SignUp = () => {
                 autoComplete="current-password"
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
-              />
-            </Grid>
           </Grid>
           <Button
             type="submit"
@@ -125,9 +137,9 @@ const SignUp = () => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Typography variant="body2" onClick={() => push("/login")}>
                 Already have an account? Sign in
-              </Link>
+              </Typography>
             </Grid>
           </Grid>
         </form>

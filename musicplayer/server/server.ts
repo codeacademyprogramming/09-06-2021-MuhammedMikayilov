@@ -95,7 +95,7 @@ app.post("/auth/login", async (req: Request, res: Response) => {
         const token = jwt.sign(
           { id: user._id, email: user.email },
           "loginmymusicapp",
-          { expiresIn: "30s" }
+          { expiresIn: "1h" }
         );
         res.status(200).json({ token });
       }
@@ -106,7 +106,7 @@ app.post("/auth/login", async (req: Request, res: Response) => {
 });
 
 // Playlist routes
-app.get("/playList", requiredAuth, async (req: Request, res: Response) => {
+app.get("/playList", async (req: Request, res: Response) => {
   try {
     const playlist = await Playlist.find();
     res.status(200).json(playlist);

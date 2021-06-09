@@ -13,6 +13,8 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory, useLocation } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../redux/actions/userAction";
 
 function Copyright() {
   return (
@@ -61,9 +63,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface IUser {
+  users: { user: { token: string } };
+}
+
 const Login = () => {
   const classes = useStyles();
   const { push } = useHistory();
+  const [inputVal, setInputVal] = React.useState({
+    email: "",
+    password: "",
+  });
+
+  const user = useSelector((state: IUser) => state.users);
+
+  const dispatch = useDispatch();
+  const handleChange = React.useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setInputVal({ ...inputVal, [name]: value });
+    },
+    [inputVal]
+  );
+
+  const handleSubmit = React.useCallback(
+    (e) => {
+      e.preventDefault();
+      loginUser(inputVal)(dispatch);
+    },
+    [inputVal, dispatch]
+  );
+
+  React.useEffect(() => {
+    console.log(user);
+    if (user.constructor !== Array) {
+      localStorage.setItem("user_exist", JSON.stringify(user));
+      push("/playlist");
+    }
+  }, [user]);
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -77,7 +114,7 @@ const Login = () => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form} onSubmit={handleSubmit}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -86,8 +123,7 @@ const Login = () => {
               id="email"
               label="Email Address"
               name="email"
-              autoComplete="email"
-              autoFocus
+              onChange={handleChange}
             />
             <TextField
               variant="outlined"
@@ -99,10 +135,7 @@ const Login = () => {
               type="password"
               id="password"
               autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              onChange={handleChange}
             />
             <Button
               type="submit"
@@ -114,13 +147,12 @@ const Login = () => {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
-                <Typography variant="body2" onClick={() => push("/signup")}>
+                <Typography
+                  variant="body2"
+                  onClick={() => push("/signup")}
+                  style={{ cursor: "pointer", color: "blue" }}
+                >
                   {"Don't have an account? Sign Up"}
                 </Typography>
               </Grid>

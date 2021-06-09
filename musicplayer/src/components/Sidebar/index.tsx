@@ -77,6 +77,10 @@ export const Sidebar = (props: IProps) => {
     },
     [push]
   );
+  const handleLogout = React.useCallback(() => {
+    localStorage.removeItem("user_exist");
+    push("/login");
+  }, [push]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -102,6 +106,15 @@ export const Sidebar = (props: IProps) => {
         ))}
       </List>
       <Divider />
+      <List>
+        <div onClick={handleLogout}>
+          <ListItem button>
+            <ListItemText>
+              <span>Log out</span>
+            </ListItemText>
+          </ListItem>
+        </div>
+      </List>
     </div>
   );
 

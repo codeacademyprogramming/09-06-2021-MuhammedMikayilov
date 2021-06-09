@@ -8,7 +8,7 @@ export const reducerUser = (state = [], action: IAction) => {
     case ACTION_TYPES.REGISTER_USER:
       return {
         ...state,
-        user: [action.payload],
+        user: action.payload,
       };
     default:
       return state;
